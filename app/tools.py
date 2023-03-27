@@ -14,7 +14,7 @@ class Database:
 
 class Store(Database):
     def __init__(self):
-        super().__init__('./database/store.db')
+        super().__init__('app/database//store.db')
         self.fields = 'title, price, license_type, is_sold, tags, badges,' +\
             'preview, bpm, tonality, genre, mood'
 
@@ -26,6 +26,9 @@ class Store(Database):
             return self.execute(f'SELECT * from store WHERE id = {beat_id}')
         return self.execute(
             f'SELECT {info_type} from store WHERE id = {beat_id}')
+
+    def get_all(self):
+        return self.execute('SELECT * from store')
 
     def update(self, beat_id, title=None, price=None, license_type=None,
                is_sold=None, tags=None, badge=None, preview=None, bpm=None,
