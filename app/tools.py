@@ -1,4 +1,5 @@
 from sqlite3 import connect
+from PIL import Image
 
 
 class Database:
@@ -15,7 +16,7 @@ class Database:
 class Store(Database):
     def __init__(self):
         super().__init__('app/database//store.db')
-        self.fields = 'title, price, license_type, is_sold, tags, badges,' +\
+        self.fields = 'title, audio, license_type, is_sold, tags, badges,' +\
             'preview, bpm, tonality, genre, mood'
 
     def sell(self, beat_id):
@@ -30,7 +31,7 @@ class Store(Database):
     def get_all(self):
         return self.execute('SELECT * from store')
 
-    def update(self, beat_id, title=None, price=None, license_type=None,
+    def update(self, beat_id, title=None, audio=None, license_type=None,
                is_sold=None, tags=None, badge=None, preview=None, bpm=None,
                tonality=None, genre=None, mood=None):
         if title != None:
@@ -38,7 +39,7 @@ class Store(Database):
                 f"UPDATE store SET title = '{title}' WHERE id = {beat_id}")
         if price != None:
             self.execute(
-                f"UPDATE store SET price = {price} WHERE id = {beat_id}")
+                f"UPDATE store SET audio = {audio} WHERE id = {beat_id}")
         if license_type != None:
             self.execute(
                 f"UPDATE store SET license_type = '{license_type}' WHERE id = {beat_id}")
@@ -64,12 +65,18 @@ class Store(Database):
             self.execute(
                 f"UPDATE store SET mood = '{mood}' WHERE id = {beat_id}")
 
-    def add_beat(self, title, price, license_type, is_sold=0, tags='',
+    def add_beat(self, title, audio, license_type, is_sold=0, tags='',
                  badges='', preview='', bpm='', tonality='',
                  genre='', mood=''):
         self.execute(
-            f"INSERT INTO store({self.fields}) VALUES('{title}', {price},\
+            f"INSERT INTO store({self.fields}) VALUES('{title}', {audio},\
             '{license_type}', {is_sold}, '{tags}', '{badges}', '{preview}',\
             '{bpm}', '{tonality}', '{genre}', '{mood}');")
 
 
+def compress_image(image_path):
+    image = Image.open(image_path)
+    image.save(image_path, optimize=True, quality=90)
+
+
+# compress_image('./static/images/previews/cosmos.jpg')
